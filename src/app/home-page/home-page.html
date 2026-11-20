@@ -3,16 +3,50 @@
   @if (loading()) {
     <mat-progress-bar mode="query" />
 
-  } @else if (angler(); as profile) {
-    <!-- Has a profile -->
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Welcome, {{ profile.name }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-actions>
-        <a matButton="filled" [routerLink]="['/sessions']">View sessions</a>
-      </mat-card-actions>
-    </mat-card>
+} @else if (angler(); as profile) {
+  <!-- Has a profile -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Welcome, {{ profile.name }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-value">{{ totalFish() }}</span>
+          <span class="stat-label">Fish caught</span>
+        </div>
+
+        <div class="stat">
+          @if (largestCatch(); as biggest) {
+            <span class="stat-value">{{ biggest.sizeCm }} cm</span>
+            <span class="stat-label">Largest ({{ biggest.species }})</span>
+          } @else {
+            <span class="stat-value">None</span>
+            <span class="stat-label">Largest catch</span>
+          }
+        </div>
+
+        <div class="stat">
+          @if (lastOuting(); as last) {
+            <span class="stat-value">{{ last.startTime | date: 'd MMM' }}</span>
+            <span class="stat-label">Last outing ({{ last.location.area }})</span>
+          } @else {
+            <span class="stat-value">None</span>
+            <span class="stat-label">Last outing</span>
+          }
+        </div>
+        <div class="stat">
+            <span class="stat-value">{{ totalSessions() }}</span>
+            <span class="stat-label">Sessions</span>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="centered-actions">
+      <a matButton="filled" [routerLink]="['/sessions']">View sessions</a>
+    </mat-card-actions>
+  </mat-card>
 
   } @else if (!showCreateForm()) {
     <!-- No profile yet -->
