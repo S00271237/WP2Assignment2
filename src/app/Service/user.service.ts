@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { computed } from '@angular/core';
-import { LoginRequest } from '../User/user';
+import { LoginRequest } from '../models/user';
 
 @Injectable({
   providedIn: 'root',

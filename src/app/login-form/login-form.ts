@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LoginRequest } from '../User/user';
+import { LoginRequest } from '../models/user';
 import { UserService } from '../Service/user.service';
 
 @Component({
