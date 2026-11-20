@@ -1,1 +1,50 @@
-<p>register-form works!</p>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+  <h2>Create Account</h2>
+
+  @if (registering()) {
+    <mat-progress-bar mode="buffer" />
+  }
+
+  <!-- Name Field -->
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" placeholder="e.g. Una" autocomplete="name" />
+    @if (registerForm.controls.name.hasError('required')) {
+      <mat-error>Name is required</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Email Field -->
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" formControlName="email" placeholder="e.g. una@example.com" autocomplete="email" />
+    @if (registerForm.controls.email.hasError('required')) {
+      <mat-error>Email is required</mat-error>
+    } @else if (registerForm.controls.email.hasError('email')) {
+      <mat-error>Enter a valid email address</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Password Field -->
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" formControlName="password" autocomplete="new-password" />
+    <mat-hint>6 to 64 characters</mat-hint>
+    @if (registerForm.controls.password.hasError('required')) {
+      <mat-error>Password is required</mat-error>
+    } @else if (registerForm.controls.password.hasError('minlength')) {
+      <mat-error>Password must be at least 6 characters</mat-error>
+    } @else if (registerForm.controls.password.hasError('maxlength')) {
+      <mat-error>Password must be 64 characters or fewer</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Action Buttons -->
+  @if (registerError(); as message) { <p role="alert">{{ message }}</p> }
+  <div class="button-group">
+    <button matButton="filled" type="submit" [disabled]="registering()">
+      {{ registering() ? 'Creating account...' : 'Register' }}
+    </button>
+    <a [routerLink]="['/login']" matButton="outlined">Back to login</a>
+  </div>
+</form>

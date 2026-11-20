@@ -31,4 +31,8 @@ export class UserService {
     localStorage.removeItem(this.tokenKey);
     this.token.set(null); // Clear the token signal
   }
+
+  register(registerData: { name: string; email: string; password: string }) {
+    return this.http.post<{ token: string }>(`${this.apiUrl}/register`, registerData);
+  }
 }
