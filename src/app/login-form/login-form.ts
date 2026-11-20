@@ -48,7 +48,7 @@ export class LoginForm {
       },
       error: (error) => {
         this.loggingIn.set(false);
-        this.loginError.set(error.error.message || 'Login failed. Please try again.');
+        this.loginError.set(error.error.message || 'Incorrect email or password, please try again.');
       },
     });
   }
