@@ -1,1 +1,62 @@
-<p>home-page works!</p>
+<section class="home-page">
+
+  @if (loading()) {
+    <mat-progress-bar mode="query" />
+
+  } @else if (angler(); as profile) {
+    <!-- Has a profile -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Welcome, {{ profile.name }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-actions>
+        <a matButton="filled" [routerLink]="['/sessions']">View sessions</a>
+      </mat-card-actions>
+    </mat-card>
+
+  } @else if (!showCreateForm()) {
+    <!-- No profile yet -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>No angler profile yet</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Create a profile to start logging your sessions and catches.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button matButton="filled" type="button" (click)="showCreateForm.set(true)">Create profile</button>
+      </mat-card-actions>
+    </mat-card>
+
+  } @else {
+    <!-- Create profile form -->
+    <form [formGroup]="anglerForm" (ngSubmit)="onCreate()" class="angler-form">
+      <h2>Create Your Angler Profile</h2>
+
+      @if (creating()) {
+        <mat-progress-bar mode="buffer" />
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="e.g. Una" />
+        @if (anglerForm.controls.name.hasError('required')) {
+          <mat-error>Name is required</mat-error>
+        } @else if (anglerForm.controls.name.hasError('minlength')) {
+          <mat-error>Name must be at least 2 characters</mat-error>
+        } @else if (anglerForm.controls.name.hasError('maxlength')) {
+          <mat-error>Name must be 30 characters or fewer</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="button-group">
+        <button matButton="filled" type="submit" [disabled]="creating()">
+          {{ creating() ? 'Creating...' : 'Create profile' }}
+        </button>
+        <button matButton="outlined" type="button" (click)="showCreateForm.set(false)">Cancel</button>
+      </div>
+    </form>
+  }
+
+  @if (error(); as message) { <p role="alert">{{ message }}</p> }
+</section>

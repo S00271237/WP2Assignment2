@@ -1,2 +1,16 @@
+<mat-toolbar class="navbar">
+  <a routerLink="/home" class="app-title">Catch Logger</a>
 
-<router-outlet />
+  <span class="spacer"></span>
+
+  @if (userService.isLoggedIn()) {
+    <a matButton routerLink="/home">Home</a>
+    <button matButton="outlined" type="button" (click)="logout()">Log out</button>
+  } @else {
+    <a matButton="filled" routerLink="/login">Log in</a>
+  }
+</mat-toolbar>
+
+<main>
+  <router-outlet />
+</main>

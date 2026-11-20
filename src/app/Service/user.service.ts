@@ -35,4 +35,11 @@ export class UserService {
   register(registerData: { name: string; email: string; password: string }) {
     return this.http.post<{ token: string }>(`${this.apiUrl}/register`, registerData);
   }
+
+  getUserId(): string {
+  const token = this.token();
+  if (!token) return '';
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  return payload.sub; // use the same field name you found in TokenPayload
+}
 }
