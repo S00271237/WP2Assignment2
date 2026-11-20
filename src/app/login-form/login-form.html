@@ -1,0 +1,36 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+  <h2>Log In</h2>
+
+  @if (loggingIn()) {
+    <mat-progress-bar mode="buffer" />
+  }
+
+  <!-- Email Field -->
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" formControlName="email" placeholder="e.g. una@example.com" autocomplete="email" />
+    @if (loginForm.controls.email.hasError('required')) {
+      <mat-error>Email is required</mat-error>
+    } @else if (loginForm.controls.email.hasError('email')) {
+      <mat-error>Enter a valid email address</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Password Field -->
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" formControlName="password" autocomplete="current-password" />
+    @if (loginForm.controls.password.hasError('required')) {
+      <mat-error>Password is required</mat-error>
+    }
+  </mat-form-field>
+
+  <!-- Action Buttons -->
+  @if (loginError(); as message) { <p role="alert">{{ message }}</p> }
+  <div class="button-group">
+    <button matButton="filled" type="submit" [disabled]="loggingIn()">
+      {{ loggingIn() ? 'Logging in...' : 'Log in' }}
+    </button>
+    <a [routerLink]="['/register']" matButton="outlined">Register</a>
+  </div>
+</form>
