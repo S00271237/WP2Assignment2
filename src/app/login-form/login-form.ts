@@ -8,10 +8,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoginRequest } from '../models/user';
 import { UserService } from '../Service/user.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login-form',
-  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule],
+  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatIconModule, MatCardModule],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss',
 })
@@ -21,6 +23,7 @@ export class LoginForm {
   private userService = inject(UserService);
   loggingIn = signal(false);
   loginError = signal<string | null>(null);
+  hidePassword = signal(true);
 
   loginForm = this.formbuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -46,9 +49,9 @@ export class LoginForm {
         this.loggingIn.set(false);
         this.router.navigate(['/home']); // Navigate to the home page after successful login
       },
-      error: (error) => {
+      error: (err:Error) => {
         this.loggingIn.set(false);
-        this.loginError.set(error.error.message || 'Incorrect email or password, please try again.');
+        this.loginError.set(err.message);
       },
     });
   }

@@ -8,7 +8,7 @@ export function friendlyMessage(error: HttpErrorResponse): string {
     case 400:
       return 'Some of the data was not valid.';
     case 401:
-      return 'Please log in to continue.';
+      return 'Incorrect login details.';
     case 403:
       return 'You are not allowed to do that.';
     case 404:

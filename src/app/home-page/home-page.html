@@ -26,6 +26,10 @@
             <span class="stat-label">Largest catch</span>
           }
         </div>
+        <div class="stat">
+            <span class="stat-value">{{ totalSessions() }}</span>
+            <span class="stat-label">Sessions</span>
+        </div>
 
         <div class="stat">
           @if (lastOuting(); as last) {
@@ -36,10 +40,7 @@
             <span class="stat-label">Last outing</span>
           }
         </div>
-        <div class="stat">
-            <span class="stat-value">{{ totalSessions() }}</span>
-            <span class="stat-label">Sessions</span>
-        </div>
+
       </div>
     </mat-card-content>
 
