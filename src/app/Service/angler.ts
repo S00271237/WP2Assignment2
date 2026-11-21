@@ -14,4 +14,9 @@ export class AnglerService {
   createAngler(data: { user: string; name: string }) {
     return this.http.post<Angler>(this.apiUrl, data);
   }
+
+  addSession(anglerId: string, session: { location: { area: string; waterBody: string }; startTime: string; endTime?: string }) {
+    return this.http.post<Angler>(`${this.apiUrl}/${anglerId}/sessions`, session);
+  }
+  
 }

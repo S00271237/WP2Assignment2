@@ -1,0 +1,76 @@
+<div class="form-page">
+  <mat-card class="form-card" appearance="outlined">
+    @if (saving()) {
+      <mat-progress-bar mode="indeterminate" class="card-progress" />
+    }
+
+    <div class="form-header">
+      <mat-icon class="header-icon">add_location_alt</mat-icon>
+      <h1>New Session</h1>
+      <p>Where and when are you fishing?</p>
+    </div>
+
+    <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
+      <!-- Area -->
+      <mat-form-field appearance="outline">
+        <mat-label>Area</mat-label>
+        <mat-icon matPrefix>place</mat-icon>
+        <input matInput formControlName="area" placeholder="e.g. Lough Key" />
+        @if (sessionForm.controls.area.hasError('required')) {
+          <mat-error>Area is required</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Water body -->
+      <mat-form-field appearance="outline">
+        <mat-label>Type of water</mat-label>
+        <mat-icon matPrefix>water</mat-icon>
+        <mat-select formControlName="waterBody">
+          @for (option of waterBodies; track option) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+          }
+        </mat-select>
+        @if (sessionForm.controls.waterBody.hasError('required')) {
+          <mat-error>Choose a type of water</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Start time -->
+      <mat-form-field appearance="outline">
+        <mat-label>Start time</mat-label>
+        <mat-icon matPrefix>schedule</mat-icon>
+        <input matInput type="datetime-local" formControlName="startTime" />
+        @if (sessionForm.controls.startTime.hasError('required')) {
+          <mat-error>Start time is required</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- End time -->
+      <mat-form-field appearance="outline">
+        <mat-label>End time</mat-label>
+        <mat-icon matPrefix>timer_off</mat-icon>
+        <input matInput type="datetime-local" formControlName="endTime" />
+        <mat-hint>Optional, leave blank if you're still out</mat-hint>
+      </mat-form-field>
+
+      @if (sessionForm.hasError('endBeforeStart')) {
+        <p class="form-error" role="alert">
+          <mat-icon>error</mat-icon> End time must be after the start time
+        </p>
+      }
+
+      @if (saveError(); as message) {
+        <p class="form-error" role="alert">
+          <mat-icon>error</mat-icon> {{ message }}
+        </p>
+      }
+
+      <div class="button-group">
+        <a matButton="outlined" routerLink="/sessions">Cancel</a>
+        <button matButton="filled" type="submit" [disabled]="saving() || !anglerId()">
+          {{ saving() ? 'Saving...' : 'Save session' }}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>
