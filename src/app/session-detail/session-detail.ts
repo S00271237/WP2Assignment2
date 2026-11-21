@@ -15,7 +15,7 @@ import { WATER_BODIES, endAfterStart, toLocalInput } from '../utils/session-form
 
 @Component({
   selector: 'app-session-detail',
-  imports: [DatePipe, ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatProgressBarModule],
+  imports: [ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatProgressBarModule],
   templateUrl: './session-detail.html',
   styleUrl: './session-detail.scss',
 })
