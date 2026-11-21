@@ -9,20 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AnglerService } from '../Service/angler';
-
-// Checks the end time (if given) is after the start time
-function endAfterStart(group: AbstractControl): ValidationErrors | null {
-  const start = group.get('startTime')?.value;
-  const end = group.get('endTime')?.value;
-  if (!start || !end) return null;
-  return new Date(end) > new Date(start) ? null : { endBeforeStart: true };
-}
-
-// Turns a Date into the "YYYY-MM-DDTHH:mm" format a datetime-local input needs
-function toLocalInput(date: Date): string {
-  const offset = date.getTimezoneOffset() * 60000;
-  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
-}
+import { toLocalInput } from '../utils/session-form';
+import { endAfterStart } from '../utils/session-form';
 
 @Component({
   selector: 'app-new-session',
@@ -35,7 +23,7 @@ export class NewSession implements OnInit {
   private anglerService = inject(AnglerService);
   private router = inject(Router);
 
-  waterBodies = ['Lake', 'River', 'Canal', 'Reservoir', 'Sea'];
+  waterBodies = ['Lake', 'River', 'Sea'];
 
   anglerId = signal<string | null>(null);
   saving = signal(false);

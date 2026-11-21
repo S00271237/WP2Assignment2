@@ -1,0 +1,167 @@
+<section class="session-page">
+  <a matButton routerLink="/sessions" class="back-link">
+    <mat-icon>arrow_back</mat-icon> All sessions
+  </a>
+
+  @if (loading()) {
+    <mat-progress-bar mode="query" />
+
+  } @else if (session(); as s) {
+    <header class="page-header">
+      <div>
+        <h1>{{ s.location.area }}</h1>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="column">
+        <mat-card appearance="outlined" class="panel">
+          <h2>Session details</h2>
+
+          <form [formGroup]="detailsForm" (ngSubmit)="saveDetails()">
+            <mat-form-field appearance="outline">
+              <mat-label>Area</mat-label>
+              <input matInput formControlName="area" />
+              @if (detailsForm.controls.area.hasError('required')) {
+                <mat-error>Area is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Type of water</mat-label>
+              <mat-select formControlName="waterBody">
+                @for (option of waterBodies; track option) {
+                  <mat-option [value]="option">{{ option }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Start time</mat-label>
+              <input matInput type="datetime-local" formControlName="startTime" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>End time</mat-label>
+              <input matInput type="datetime-local" formControlName="endTime" />
+            </mat-form-field>
+
+            @if (detailsForm.hasError('endBeforeStart')) {
+              <p class="form-error" role="alert"><mat-icon>error</mat-icon> End time must be after the start time</p>
+            }
+            @if (detailsError(); as message) {
+              <p class="form-error" role="alert"><mat-icon>error</mat-icon> {{ message }}</p>
+            }
+
+            <div class="button-row">
+              @if (!s.endTime) {
+                <button matButton="outlined" type="button" (click)="endNow()" [disabled]="savingDetails()">
+                  <mat-icon>timer_off</mat-icon> End session now
+                </button>
+              }
+              <button matButton="filled" type="submit" [disabled]="savingDetails() || detailsForm.pristine">
+                {{ savingDetails() ? 'Saving...' : 'Save changes' }}
+              </button>
+            </div>
+          </form>
+        </mat-card>
+
+        <mat-card appearance="outlined" class="panel danger-panel">
+          <h2>Delete session</h2>
+          <p>This removes the session and every catch logged in it. It can't be undone.</p>
+
+          @if (!confirmDelete()) {
+            <button matButton="outlined" class="danger-button" type="button" (click)="confirmDelete.set(true)">
+              <mat-icon>delete</mat-icon> Delete session
+            </button>
+          } @else {
+            <div class="button-row">
+              <button matButton="outlined" type="button" (click)="confirmDelete.set(false)" [disabled]="deleting()">Cancel</button>
+              <button matButton="filled" class="danger-filled" type="button" (click)="deleteSession()" [disabled]="deleting()">
+                {{ deleting() ? 'Deleting...' : 'Yes, delete it' }}
+              </button>
+            </div>
+          }
+        </mat-card>
+      </div>
+
+      <!-- RIGHT: catches -->
+      <div class="column">
+        <mat-card appearance="outlined" class="panel">
+          <h2>Catches <span class="count">{{ fishCount() }} fish</span></h2>
+
+          @if (s.catches.length === 0) {
+            <p class="empty">No catches logged yet. Add your first one below.</p>
+          } @else {
+            <ul class="catch-list">
+              @for (c of s.catches; track c._id) {
+                <li class="catch-item">
+                  <mat-icon class="fish-icon">phishing</mat-icon>
+                  <div class="catch-info">
+                    <span class="species">
+                      {{ c.species }}
+                      @if ((c.quantity ?? 1) > 1) { <span class="quantity">x{{ c.quantity }}</span> }
+                    </span>
+                    <span class="catch-meta">
+                      @if (c.sizeCm) { {{ c.sizeCm }} cm }
+                      @if (c.sizeCm && c.bait) { &middot; }
+                      @if (c.bait) { on {{ c.bait }} }
+                    </span>
+                  </div>
+                  <button mat-icon-button type="button" (click)="deleteCatch(c._id)"
+                          [disabled]="deletingCatchId() === c._id" aria-label="Delete catch">
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+
+                    <h3>Log a catch</h3>
+          <form [formGroup]="catchForm" class="catch-form">
+            <mat-form-field appearance="outline" class="span-2">
+              <mat-label>Species</mat-label>
+              <input matInput formControlName="species" placeholder="e.g. Pike" />
+              @if (catchForm.controls.species.hasError('required')) {
+                <mat-error>Species is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Quantity</mat-label>
+              <input matInput type="number" min="1" formControlName="quantity" />
+              @if (catchForm.controls.quantity.hasError('min')) {
+                <mat-error>At least 1</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Size (cm)</mat-label>
+              <input matInput type="number" min="0" formControlName="sizeCm" />
+              @if (catchForm.controls.sizeCm.hasError('min')) {
+                <mat-error>Can't be negative</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="span-2">
+              <mat-label>Bait</mat-label>
+              <input matInput formControlName="bait" placeholder="e.g. Spinner" />
+              <mat-hint>Optional</mat-hint>
+            </mat-form-field>
+
+            @if (catchError(); as message) {
+              <p class="form-error span-2" role="alert"><mat-icon>error</mat-icon> {{ message }}</p>
+            }
+
+            <button matButton="filled" type="button" class="span-2" (click)="addCatch()" [disabled]="addingCatch()">
+              <mat-icon>add</mat-icon> {{ addingCatch() ? 'Adding...' : 'Add catch' }}
+            </button>
+          </form>
+        </mat-card>
+      </div>
+    </div>
+
+  } @else {
+    <p class="page-error" role="alert">{{ error() ?? 'Session not found' }}</p>
+  }
+</section>
