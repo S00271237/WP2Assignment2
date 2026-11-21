@@ -2,8 +2,8 @@
 
   @if (loading()) {
     <mat-progress-bar mode="query" />
-
-} @else if (angler(); as profile) {
+}
+ @else if (angler(); as profile) {
   <!-- Has a profile -->
   <mat-card>
     <mat-card-header>
@@ -91,6 +91,9 @@
         <button matButton="outlined" type="button" (click)="showCreateForm.set(false)">Cancel</button>
       </div>
     </form>
+  }
+  @if (userService.isAdmin()) {
+    <app-user-list/>
   }
 
   @if (error(); as message) { <p role="alert">{{ message }}</p> }

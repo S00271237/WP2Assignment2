@@ -11,18 +11,20 @@ import { Angler } from '../models/angler';
 import { AnglerService } from '../Service/angler';
 import { UserService } from '../Service/user.service';
 import { DatePipe } from '@angular/common';
+import { UserList } from '../user-list/user-list';
 
 @Component({
   selector: 'app-home-page',
-  imports: [DatePipe, ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule],
+  imports: [DatePipe, ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressBarModule, UserList],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
 })
 export class HomePage implements OnInit {
   private formbuilder = inject(FormBuilder);
   private anglerService = inject(AnglerService);
-  private userService = inject(UserService);
 
+
+  userService = inject(UserService);
   angler = signal<Angler | null>(null);
   loading = signal(true);
   showCreateForm = signal(false);

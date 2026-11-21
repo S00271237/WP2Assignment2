@@ -1,0 +1,42 @@
+<mat-card appearance="outlined" class="users-card">
+  <div class="users-header">
+    <h2>Manage users</h2>
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="query" />
+  } @else {
+    <ul class="user-list">
+      @for (user of users(); track user._id) {
+        <li class="user-row">
+          <div class="user-info">
+            <span class="user-name">
+              {{ user.name }}
+              @if (user.role === 'admin') { <span class="role-badge">Admin</span> }
+            </span>
+            <span class="user-email">{{ user.email }}</span>
+          </div>
+
+          @if (user._id === currentUserId) {
+            <span class="you-label">You</span>
+          } @else if (confirmingId() === user._id) {
+            <div class="confirm-row">
+              <button matButton type="button" (click)="confirmingId.set(null)" [disabled]="deletingId() === user._id">Cancel</button>
+              <button matButton="filled" class="danger-filled" type="button" (click)="deleteUser(user._id)" [disabled]="deletingId() === user._id">
+                {{ deletingId() === user._id ? 'Deleting...' : 'Delete' }}
+              </button>
+            </div>
+          } @else {
+            <button mat-icon-button type="button" (click)="confirmingId.set(user._id)" [attr.aria-label]="'Delete ' + user.name">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  @if (error(); as message) {
+    <p class="form-error" role="alert"><mat-icon>error</mat-icon> {{ message }}</p>
+  }
+</mat-card>

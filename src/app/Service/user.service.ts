@@ -17,6 +17,7 @@ export class UserService {
 
   token = signal<string | null>(localStorage.getItem(this.tokenKey)); // Initialize the token signal with the value from localStorage
   isLoggedIn = computed(() => !!this.token()); // Computed signal to determine if the user is logged in based on the token
+  
 
   login(credentials: LoginRequest) {
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials)
@@ -36,10 +37,17 @@ export class UserService {
     return this.http.post<{ token: string }>(`${this.apiUrl}/register`, registerData);
   }
 
-  getUserId(): string {
+
+  // changed this so it can figure out if the user is an admin based on the token
+private payload = computed(() => {
   const token = this.token();
-  if (!token) return '';
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  return payload.sub; // use the same field name you found in TokenPayload
+  if (!token) return null;
+  return JSON.parse(atob(token.split('.')[1]));
+});
+
+isAdmin = computed(() => this.payload()?.role === 'admin');
+
+getUserId(): string {
+  return this.payload()?.sub ?? ''; // keep the same field name you used before
 }
 }
