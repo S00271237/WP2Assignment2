@@ -11,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-register-form',
@@ -20,7 +22,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatIconModule,
+    MatCardModule
   ],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss',
@@ -30,6 +34,7 @@ export class RegisterForm {
   private router = inject(Router);
   private userService = inject(UserService);
 
+  hidePassword = signal(true);
   registering = signal(false);
   registerError = signal<string | null>(null);
 

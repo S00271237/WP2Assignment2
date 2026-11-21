@@ -1,50 +1,67 @@
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
-  <h2>Create Account</h2>
-
-  @if (registering()) {
-    <mat-progress-bar mode="buffer" />
-  }
-
-  <!-- Name Field -->
-  <mat-form-field appearance="outline">
-    <mat-label>Name</mat-label>
-    <input matInput formControlName="name" placeholder="e.g. Una" autocomplete="name" />
-    @if (registerForm.controls.name.hasError('required')) {
-      <mat-error>Name is required</mat-error>
+<div class="auth-page">
+  <mat-card class="auth-card" appearance="outlined">
+    @if (registering()) {
+      <mat-progress-bar mode="indeterminate" class="card-progress" />
     }
-  </mat-form-field>
 
-  <!-- Email Field -->
-  <mat-form-field appearance="outline">
-    <mat-label>Email</mat-label>
-    <input matInput type="email" formControlName="email" placeholder="e.g. una@example.com" autocomplete="email" />
-    @if (registerForm.controls.email.hasError('required')) {
-      <mat-error>Email is required</mat-error>
-    } @else if (registerForm.controls.email.hasError('email')) {
-      <mat-error>Enter a valid email address</mat-error>
-    }
-  </mat-form-field>
+    <div class="auth-header">
+      <mat-icon class="auth-icon">phishing</mat-icon>
+      <h1>Create your account</h1>
+      <p>Start logging your catches in seconds</p>
+    </div>
 
-  <!-- Password Field -->
-  <mat-form-field appearance="outline">
-    <mat-label>Password</mat-label>
-    <input matInput type="password" formControlName="password" autocomplete="new-password" />
-    <mat-hint>6 to 64 characters</mat-hint>
-    @if (registerForm.controls.password.hasError('required')) {
-      <mat-error>Password is required</mat-error>
-    } @else if (registerForm.controls.password.hasError('minlength')) {
-      <mat-error>Password must be at least 6 characters</mat-error>
-    } @else if (registerForm.controls.password.hasError('maxlength')) {
-      <mat-error>Password must be 64 characters or fewer</mat-error>
-    }
-  </mat-form-field>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <mat-icon matPrefix>person</mat-icon>
+        <input matInput formControlName="name" placeholder="Una" autocomplete="name" />
+        @if (registerForm.controls.name.hasError('required')) {
+          <mat-error>Name is required</mat-error>
+        }
+      </mat-form-field>
 
-  <!-- Action Buttons -->
-  @if (registerError(); as message) { <p role="alert">{{ message }}</p> }
-  <div class="button-group">
-    <button matButton="filled" type="submit" [disabled]="registering()">
-      {{ registering() ? 'Creating account...' : 'Register' }}
-    </button>
-    <a [routerLink]="['/login']" matButton="outlined">Back to login</a>
-  </div>
-</form>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <mat-icon matPrefix>mail</mat-icon>
+        <input matInput type="email" formControlName="email" placeholder="una@example.com" autocomplete="email" />
+        @if (registerForm.controls.email.hasError('required')) {
+          <mat-error>Email is required</mat-error>
+        } @else if (registerForm.controls.email.hasError('email')) {
+          <mat-error>Enter a valid email address</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" autocomplete="new-password" />
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())"
+                [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+          <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-hint>6 to 64 characters</mat-hint>
+        @if (registerForm.controls.password.hasError('required')) {
+          <mat-error>Password is required</mat-error>
+        } @else if (registerForm.controls.password.hasError('minlength')) {
+          <mat-error>Password must be at least 6 characters</mat-error>
+        } @else if (registerForm.controls.password.hasError('maxlength')) {
+          <mat-error>Password must be 64 characters or fewer</mat-error>
+        }
+      </mat-form-field>
+
+      @if (registerError(); as message) {
+        <p class="form-error" role="alert">
+          <mat-icon>error</mat-icon> {{ message }}
+        </p>
+      }
+
+      <button matButton="filled" type="submit" class="submit-button" [disabled]="registering()">
+        {{ registering() ? 'Creating account...' : 'Create account' }}
+      </button>
+    </form>
+
+    <p class="switch-link">
+      Already have an account? <a routerLink="/login">Log in</a>
+    </p>
+  </mat-card>
+</div>

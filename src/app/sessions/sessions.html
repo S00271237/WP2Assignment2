@@ -1,0 +1,49 @@
+<section class="sessions-page">
+  <div class="page-header">
+    <h1>My Sessions</h1>
+    @if (sessions().length > 0) {
+      <span class="session-count">{{ sessions().length }} logged</span>
+    }
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="query" />
+
+  } @else if (error(); as message) {
+    <p class="page-error" role="alert">{{ message }}</p>
+    <a matButton="outlined" routerLink="/home">Back to home</a>
+
+  } @else {
+    <div class="session-grid">
+      @for (session of sessions(); track session._id) {
+        <a class="tile session-tile" [routerLink]="['/sessions', session._id]">
+          <div class="tile-top">
+            <span class="water-body">{{ session.location.waterBody }}</span>
+            @if (!session.endTime) {
+              <span class="in-progress">In progress</span>
+            }
+          </div>
+
+          <h2 class="area">{{ session.location.area }}</h2>
+
+          <div class="details">
+            <span><mat-icon>event</mat-icon>{{ session.startTime | date: 'EEE d MMM y' }}</span>
+            <span><mat-icon>schedule</mat-icon>{{ session.startTime | date: 'HH:mm' }}
+              @if (session.endTime) { to {{ session.endTime | date: 'HH:mm' }} }
+            </span>
+          </div>
+
+          <div class="catch-count">
+            <mat-icon>phishing</mat-icon>
+            {{ fishCount(session) }} {{ fishCount(session) === 1 ? 'fish' : 'fish' }} caught
+          </div>
+        </a>
+      }
+
+      <a class="tile add-tile" routerLink="/sessions/new" aria-label="Add a new session">
+        <mat-icon class="add-icon">add</mat-icon>
+        <span>New session</span>
+      </a>
+    </div>
+  }
+</section>
